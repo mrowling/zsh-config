@@ -272,7 +272,7 @@ install_tools() {
         echo -e "${YELLOW}Skipping kickstart.nvim installation${NC}"
     else
         echo -e "${BLUE}Cloning kickstart.nvim configuration...${NC}"
-        git clone https://github.com/nvim-lua/kickstart.nvim.git "$NVIM_CONFIG_DIR"
+        git clone https://github.com/mrowling/kickstart.nvim.git "$NVIM_CONFIG_DIR"
         echo -e "${GREEN}✓ kickstart.nvim cloned to ${NVIM_CONFIG_DIR}${NC}"
     fi
     echo ""
