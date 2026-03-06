@@ -171,6 +171,84 @@ install_tools() {
         fi
     fi
     echo ""
+    
+    # Install Neovim
+    NVIM_VERSION="0.10.3"
+    
+    if command_exists nvim; then
+        CURRENT_NVIM_VERSION=$(nvim --version | head -1 | awk '{print $2}' | sed 's/v//')
+        if [[ "$CURRENT_NVIM_VERSION" == "$NVIM_VERSION" ]]; then
+            echo -e "${GREEN}✓ Neovim ${NVIM_VERSION} already installed${NC}"
+        else
+            echo -e "${YELLOW}Neovim ${CURRENT_NVIM_VERSION} is installed, but ${NVIM_VERSION} is specified${NC}"
+            read -p "Install Neovim ${NVIM_VERSION}? [Y/n] " -n 1 -r
+            echo ""
+            if [[ $REPLY =~ ^[Yy]$ ]] || [[ -z $REPLY ]]; then
+                echo -e "${BLUE}Installing Neovim ${NVIM_VERSION}...${NC}"
+                
+                if [[ "$OSTYPE" == "darwin"* ]]; then
+                    if [[ "$(uname -m)" == "arm64" ]]; then
+                        NVIM_ARCH="macos-arm64"
+                    else
+                        NVIM_ARCH="macos-x86_64"
+                    fi
+                    
+                    curl -LO "https://github.com/neovim/neovim/releases/download/v${NVIM_VERSION}/nvim-${NVIM_ARCH}.tar.gz"
+                    sudo tar -C /usr/local -xzf "nvim-${NVIM_ARCH}.tar.gz"
+                    sudo ln -sf /usr/local/nvim-${NVIM_ARCH}/bin/nvim /usr/local/bin/nvim
+                    rm "nvim-${NVIM_ARCH}.tar.gz"
+                else
+                    # Linux
+                    if [[ "$(uname -m)" == "aarch64" ]]; then
+                        NVIM_ARCH="linux-arm64"
+                    else
+                        NVIM_ARCH="linux-x86_64"
+                    fi
+                    
+                    curl -LO "https://github.com/neovim/neovim/releases/download/v${NVIM_VERSION}/nvim-${NVIM_ARCH}.tar.gz"
+                    sudo rm -rf /opt/nvim-${NVIM_ARCH}
+                    sudo tar -C /opt -xzf "nvim-${NVIM_ARCH}.tar.gz"
+                    sudo ln -sf /opt/nvim-${NVIM_ARCH}/bin/nvim /usr/local/bin/nvim
+                    rm "nvim-${NVIM_ARCH}.tar.gz"
+                fi
+                
+                echo -e "${GREEN}✓ Neovim ${NVIM_VERSION} installed${NC}"
+            else
+                echo -e "${YELLOW}Skipping Neovim installation${NC}"
+            fi
+        fi
+    else
+        echo -e "${BLUE}Installing Neovim ${NVIM_VERSION}...${NC}"
+        
+        if [[ "$OSTYPE" == "darwin"* ]]; then
+            if [[ "$(uname -m)" == "arm64" ]]; then
+                NVIM_ARCH="macos-arm64"
+            else
+                NVIM_ARCH="macos-x86_64"
+            fi
+            
+            curl -LO "https://github.com/neovim/neovim/releases/download/v${NVIM_VERSION}/nvim-${NVIM_ARCH}.tar.gz"
+            sudo tar -C /usr/local -xzf "nvim-${NVIM_ARCH}.tar.gz"
+            sudo ln -sf /usr/local/nvim-${NVIM_ARCH}/bin/nvim /usr/local/bin/nvim
+            rm "nvim-${NVIM_ARCH}.tar.gz"
+        else
+            # Linux
+            if [[ "$(uname -m)" == "aarch64" ]]; then
+                NVIM_ARCH="linux-arm64"
+            else
+                NVIM_ARCH="linux-x86_64"
+            fi
+            
+            curl -LO "https://github.com/neovim/neovim/releases/download/v${NVIM_VERSION}/nvim-${NVIM_ARCH}.tar.gz"
+            sudo rm -rf /opt/nvim-${NVIM_ARCH}
+            sudo tar -C /opt -xzf "nvim-${NVIM_ARCH}.tar.gz"
+            sudo ln -sf /opt/nvim-${NVIM_ARCH}/bin/nvim /usr/local/bin/nvim
+            rm "nvim-${NVIM_ARCH}.tar.gz"
+        fi
+        
+        echo -e "${GREEN}✓ Neovim ${NVIM_VERSION} installed${NC}"
+    fi
+    echo ""
 }
 
 # Backup existing .zshrc if it exists
@@ -185,13 +263,14 @@ else
 fi
 
 # Ask user if they want to install tools
-echo -e "${CYAN}Do you want to install development tools? (NVM, uv, Go, Bun, GitHub CLI)${NC}"
+echo -e "${CYAN}Do you want to install development tools? (NVM, uv, Go, Bun, GitHub CLI, Neovim)${NC}"
 echo -e "${YELLOW}This will download and install the following:${NC}"
 echo -e "  • NVM (Node Version Manager) + Node.js LTS"
 echo -e "  • uv (Fast Python package manager)"
 echo -e "  • Go (latest stable)"
 echo -e "  • Bun (JavaScript runtime)"
 echo -e "  • GitHub CLI (gh)"
+echo -e "  • Neovim (modern Vim-based editor)"
 echo ""
 read -p "Install tools? [Y/n] " -n 1 -r
 echo ""
