@@ -257,6 +257,24 @@ install_tools() {
         
         echo -e "${GREEN}✓ Neovim ${NVIM_VERSION} installed${NC}"
     fi
+    
+    # Clone kickstart.nvim configuration
+    if [[ "$OSTYPE" == "msys" ]] || [[ "$OSTYPE" == "win32" ]]; then
+        # Windows
+        NVIM_CONFIG_DIR="$LOCALAPPDATA/nvim"
+    else
+        # Linux/macOS
+        NVIM_CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/nvim"
+    fi
+    
+    if [[ -d "$NVIM_CONFIG_DIR" ]]; then
+        echo -e "${YELLOW}Neovim config directory already exists at: ${NVIM_CONFIG_DIR}${NC}"
+        echo -e "${YELLOW}Skipping kickstart.nvim installation${NC}"
+    else
+        echo -e "${BLUE}Cloning kickstart.nvim configuration...${NC}"
+        git clone https://github.com/nvim-lua/kickstart.nvim.git "$NVIM_CONFIG_DIR"
+        echo -e "${GREEN}✓ kickstart.nvim cloned to ${NVIM_CONFIG_DIR}${NC}"
+    fi
     echo ""
 }
 
