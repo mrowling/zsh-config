@@ -1,0 +1,23 @@
+# Ignore local configuration files containing secrets
+local.zsh
+local/
+
+# Ignore zsh history
+.zsh_history
+.zsh_sessions/
+
+# Ignore completion cache
+.zcompdump*
+
+# Ignore host-specific configs (optional - uncomment if you don't want to track them)
+# host/*.zsh
+
+# Ignore backup files
+*.bak
+*.swp
+*.swo
+*~
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db

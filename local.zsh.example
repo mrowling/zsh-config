@@ -1,0 +1,17 @@
+# Local configuration template
+# Copy this file to local.zsh or create files in local/ directory
+# These files are ignored by git and can contain machine-specific settings
+
+# Example: Set environment-specific variables
+# export KUBECONFIG=~/.kube/my-config.yaml
+
+# Example: API tokens and secrets
+# export GITHUB_TOKEN="your_token_here"
+# export CLOUDFLARE_API_TOKEN="your_token_here"
+# export OPENROUTER_API_KEY="your_key_here"
+
+# Example: Machine-specific paths
+# export LOCAL_OLLAMA_BASE_URL="http://your-server:11434/v1"
+
+# Example: Custom environment variables
+# export PROXMOX_TOKEN="your_token"
