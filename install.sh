@@ -173,7 +173,16 @@ install_tools() {
     echo ""
     
     # Install Neovim
-    NVIM_VERSION="0.10.3"
+    echo -e "${BLUE}Fetching latest Neovim version...${NC}"
+    NVIM_VERSION=$(curl -s https://api.github.com/repos/neovim/neovim/releases/latest | grep '"tag_name"' | sed -E 's/.*"v([^"]+)".*/\1/')
+    
+    if [[ -z "$NVIM_VERSION" ]]; then
+        echo -e "${RED}Error: Could not fetch latest Neovim version${NC}"
+        echo -e "${YELLOW}Falling back to Neovim 0.10.3${NC}"
+        NVIM_VERSION="0.10.3"
+    else
+        echo -e "${GREEN}Latest Neovim version: ${NVIM_VERSION}${NC}"
+    fi
     
     if command_exists nvim; then
         CURRENT_NVIM_VERSION=$(nvim --version | head -1 | awk '{print $2}' | sed 's/v//')
