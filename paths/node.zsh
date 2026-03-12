@@ -41,11 +41,18 @@ npx() {
   npx "$@"
 }
 
-# Add default node path if it exists (for when NVM is already initialized elsewhere)
+# Add default node path EARLY so npm/node binaries are found before lazy-load
+# This prevents Windows Node from being used in WSL
 if [[ -d "$NVM_DIR/versions/node" ]]; then
-  # Find the default or latest node version
-  DEFAULT_NODE_PATH=$(find "$NVM_DIR/versions/node" -maxdepth 1 -name 'v*' | sort -V | tail -1)
-  if [[ -n "$DEFAULT_NODE_PATH" ]]; then
+  # Try to find nvm default alias first, fall back to latest version
+  if [[ -L "$NVM_DIR/alias/default" ]]; then
+    DEFAULT_NODE_VERSION=$(cat "$NVM_DIR/alias/default" 2>/dev/null)
+    DEFAULT_NODE_PATH="$NVM_DIR/versions/node/$DEFAULT_NODE_VERSION"
+  else
+    # Find the latest node version
+    DEFAULT_NODE_PATH=$(find "$NVM_DIR/versions/node" -maxdepth 1 -name 'v*' | sort -V | tail -1)
+  fi
+  if [[ -n "$DEFAULT_NODE_PATH" && -d "$DEFAULT_NODE_PATH/bin" ]]; then
     path_prepend "$DEFAULT_NODE_PATH/bin"
   fi
 fi

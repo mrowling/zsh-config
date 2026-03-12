@@ -5,6 +5,13 @@ if [[ -f "$ZSH_CONFIG_DIR/os/linux.zsh" ]]; then
   source "$ZSH_CONFIG_DIR/os/linux.zsh"
 fi
 
+# Filter out Windows Node.js from PATH to avoid conflicts with nvm
+# Remove /mnt/c/Program Files/nodejs and AppData/Roaming/npm from PATH
+if [[ -n "${WSL_DISTRO_NAME:-}" ]] || grep -qEi '(microsoft|wsl)' /proc/version 2>/dev/null; then
+  PATH=$(echo "$PATH" | tr ':' '\n' | grep -v '/mnt/c/Program Files/nodejs' | grep -v 'AppData/Roaming/npm' | tr '\n' ':' | sed 's/:$//')
+  export PATH
+fi
+
 # WSL-specific settings
 export BROWSER='wslview'
 
